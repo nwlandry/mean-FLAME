@@ -240,7 +240,7 @@ int dydt(double t, const double y[], double f[], void * param) {
                 if(d4>0 && yref[d01][d02][0][d3+1][d4-1]>0) fref[d01][d02][0][d3][d4] += yref[d01][d02][0][d3][d4-1]*p.sapling2tree*pow(yref[d01][d02][0][d3+1][d4-1],0.5)*Growth(1.0*d4-1.0,K)*(1-Poisson_coupling(d3, yref[d01][d02][0][d3+1][d4-1]));//tree MF occupation number influx
                 fref[d01][d02][0][d3][d4] -= yref[d01][d02][0][d3][d4]*d4*p.treedeath*Poisson_coupling(d4, yref[d01][d02][0][d3][d4+1]);//tree MF occupation number outflux
                 
-                if(yref[d01][d02][0][d3+1][d4]>0) fref[d01][d02][0][d3+1][d4] = yref[d01][d02][2][d3][d4]*p.seedling2sapling - yref[d01][d02][0][d3+1][d4]*p.sapplingdeath+p.sapling2tree*pow(yref[d01][d02][0][d3+1][d4],0.5)*Growth(yref[d01][d02][0][d3][d4+1],K); //sappling mean-field state
+                if(yref[d01][d02][0][d3+1][d4]>0) fref[d01][d02][0][d3+1][d4] = yref[d01][d02][2][d3][d4]*p.seedling2sapling - yref[d01][d02][0][d3+1][d4]*p.sapplingdeath-p.sapling2tree*pow(yref[d01][d02][0][d3+1][d4],0.5)*Growth(yref[d01][d02][0][d3][d4+1],K); //sappling mean-field state
                 else fref[d01][d02][0][d3+1][d4] = yref[d01][d02][2][d3][d4]*p.seedling2sapling - yref[d01][d02][0][d3+1][d4]*(p.sapplingdeath); //sappling mean-field state
                 if(yref[d01][d02][0][d3+1][d4]>0) fref[d01][d02][0][d3][d4+1] = pow(yref[d01][d02][0][d3+1][d4],0.5)*p.sapling2tree*Growth(yref[d01][d02][0][d3][d4+1],K) - yref[d01][d02][0][d3][d4+1]*p.treedeath;  //tree mean-field state
                 else fref[d01][d02][0][d3][d4+1] = - yref[d01][d02][0][d3][d4+1]*p.treedeath;  //tree mean-field state

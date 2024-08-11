@@ -27,7 +27,16 @@ double binomial(int n, int k, double p);
 using namespace std;
 
 int main(int argc, const char *argv[]) {
-		 
+    if(argc<7) {cerr << "Requires 7 parameters:\n"
+                     << "transmission rate (beta)\n"
+                     << "reproduction rate (mu)\n"
+                     << "carrying capacity (K)\n"
+                     << "death rate (nu)\n"
+                     << "side length of location grid (N)\n"
+                     << "number of master infectious states\n"
+                     << "number of master recovered states\n"
+                     << endl; return 0;}
+
 	//Model parameters	
 	double beta = atof(argv[1]); //transmission rate
 	double mu = atof(argv[2]); //reproduction rate
@@ -36,9 +45,7 @@ int main(int argc, const char *argv[]) {
 	int N = atoi(argv[5]); //side length of location grid
 	int MF3 = atoi(argv[6])+2; //number of states in master equation of dimension 1
     int MF4 = atoi(argv[7])+2; //number of states in master equation of dimension 2
-    if(argc<4) {cerr << "Requires 5 parameters: transmission rate (beta),\n recovery rate, \n"
-                    << "\n side length of location grid (N),\n number of master infectious state,\n number of master recovered state.\n"
-                    << endl; return 0;}
+    
 
     Sparam param = {beta, mu, K, nu, N, MF3, MF4};
 
@@ -80,11 +87,12 @@ int main(int argc, const char *argv[]) {
     }
 
     // Define GSL odeiv parameters
+    long unsigned int sys_size = N*N*1*MF3*MF4;
     const gsl_odeiv_step_type * step_type = gsl_odeiv_step_rkf45;
-    gsl_odeiv_step * step = gsl_odeiv_step_alloc (step_type, N*N*1*MF3*MF4);
+    gsl_odeiv_step * step = gsl_odeiv_step_alloc (step_type, sys_size);
     gsl_odeiv_control * control = gsl_odeiv_control_y_new (eps_abs,eps_rel);
-    gsl_odeiv_evolve * evolve = gsl_odeiv_evolve_alloc (N*N*1*MF3*MF4);
-    gsl_odeiv_system sys = {dydt, NULL, N*N*1*MF3*MF4, &param};
+    gsl_odeiv_evolve * evolve = gsl_odeiv_evolve_alloc (sys_size);
+    gsl_odeiv_system sys = {dydt, NULL, sys_size, &param};
 
 	//Integration
     int status(GSL_SUCCESS);

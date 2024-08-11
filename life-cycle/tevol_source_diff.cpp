@@ -89,11 +89,12 @@ int main(int argc, const char *argv[]) {
     }
 
     // Define GSL odeiv parameters
+    long unsigned int sys_size = N*N*3*MF3*MF4;
     const gsl_odeiv_step_type * step_type = gsl_odeiv_step_rkf45;
-    gsl_odeiv_step * step = gsl_odeiv_step_alloc (step_type, N*N*3*MF3*MF4);
+    gsl_odeiv_step * step = gsl_odeiv_step_alloc (step_type, sys_size);
     gsl_odeiv_control * control = gsl_odeiv_control_y_new (eps_abs,eps_rel);
-    gsl_odeiv_evolve * evolve = gsl_odeiv_evolve_alloc (N*N*3*MF3*MF4);
-    gsl_odeiv_system sys = {dydt, NULL, N*N*3*MF3*MF4, &param};
+    gsl_odeiv_evolve * evolve = gsl_odeiv_evolve_alloc (sys_size);
+    gsl_odeiv_system sys = {dydt, NULL, sys_size, &param};
 	
 	//Integration
     int status(GSL_SUCCESS);

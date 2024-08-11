@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(Boost_USE_STATIC_LIBS OFF) 
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost 1.85.0 COMPONENTS multi_array)
+find_package(Boost COMPONENTS multi_array)
 find_package(GSL COMPONENTS gsl_errno gsl_odeiv)
 
 if(Boost_FOUND AND GSL_FOUND)

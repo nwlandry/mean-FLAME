@@ -27,7 +27,12 @@ double binomial(int n, int k, double p);
 using namespace std;
 
 int main(int argc, const char *argv[]) {
-		 
+    if(argc<6) {cerr << "Requires bunch of parameters: basic diffusion rate (beta),\n rate of seed to seedling (seed2seedling), \n seed death rate (seeddeath),"
+                    << "\n seedling to sapling (seedling2sapling), \n seedling death rate (seedlingdeath),\n sapling to tree (sapling2tree),"
+                    << "\n sapling death rate (saplingdeath), \n tree death rate (treedeath),"
+                    << "\n side length of location grid (N),\n number of master sappling state,\n nnumber of master adult state.\n"
+                    << endl; return 0;}
+                    
 	//Model parameters	
 	double beta = atof(argv[1]); //basic diffusion rate
 	double seed2seedling = atof(argv[2]); //rate of seed 2 seedling transition
@@ -40,11 +45,6 @@ int main(int argc, const char *argv[]) {
 	int N = atoi(argv[9]); //side length of location grid
 	int MF3 = atoi(argv[10])+2; //number of states in master equation of dimension 1
     int MF4 = atoi(argv[11])+2; //number of states in master equation of dimension 2
-    if(argc<6) {cerr << "Requires bunch of parameters: basic diffusion rate (beta),\n rate of seed to seedling (seed2seedling), \n seed death rate (seeddeath),"
-                    << "\n seedling to sapling (seedling2sapling), \n seedling death rate (seedlingdeath),\n sapling to tree (sapling2tree),"
-                    << "\n sapling death rate (saplingdeath), \n tree death rate (treedeath),"
-                    << "\n side length of location grid (N),\n number of master sappling state,\n nnumber of master adult state.\n"
-                    << endl; return 0;}
 
     Sparam param = {beta, seed2seedling, seeddeath, seedling2sapling, seedlingdeath, sapling2tree, sapplingdeath, treedeath, N, MF3, MF4};
 

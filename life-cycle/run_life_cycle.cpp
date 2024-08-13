@@ -1,10 +1,5 @@
 /**
- * @file   tevol_source_diff.hpp
  * @brief  ODE system for species dispersion in a coupled master-equation + mean-field system
- *
- * Source code. All parameters passed as arguments, but specify and compile to change precision or output format.
- * g++ -std=c++11 -O3 -o tevol_source_diff ./tevol_source_diff.cpp $(gsl-config --cflags) $(gsl-config --libs)
- *
  * @author  LHD
  * @since   2023-10-16
  */

@@ -8,9 +8,7 @@
 using namespace std;
 
 /**
- * @file   dyn_diff.hpp
  * @brief  ODE system for Lotka-Voleterra dynamics in a coupled master-equation + mean-field system
- *
  * @author  LHD
  * @since   2024-01-02
  */

@@ -1,5 +1,4 @@
 /**
- * @file   tevol_source_diff.hpp
  * @brief  ODE system for Lotka-Volterra dynamics in a coupled master-equation + mean-field system
  * @author  LHD
  * @since   2024-01-02

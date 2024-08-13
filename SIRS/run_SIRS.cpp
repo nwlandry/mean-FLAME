@@ -1,7 +1,7 @@
 /**
  * @brief  ODE system for SIRS dynamics in a coupled master-equation + mean-field system
- * @author  LHD
- * @since   2023-10-16
+ * @author LHD
+ * @since  2023-10-16
  */
 
 #include <iostream>

@@ -50,10 +50,10 @@ int main(int argc, const char *argv[])
     double beta = atof(argv[1]);             // basic diffusion rate
     double seed2seedling = atof(argv[2]);    // rate of seed 2 seedling transition
     double seed_death = atof(argv[3]);       // death rate for seeds
-    double seedling2sapling = atof(argv[4]); // rate of seedling to sappling transition
+    double seedling2sapling = atof(argv[4]); // rate of seedling to sapling transition
     double seedling_death = atof(argv[5]);   // death rate for seedlings
-    double sapling2tree = atof(argv[6]);     // rate of sappling to tree transition
-    double sapling_death = atof(argv[7]);    // death rate for sapplings
+    double sapling2tree = atof(argv[6]);     // rate of sapling to tree transition
+    double sapling_death = atof(argv[7]);    // death rate for saplings
     double tree_death = atof(argv[8]);       // death rate for trees
     int n_l = atoi(argv[9]);                 // side length of location grid
     int n_me1 = atoi(argv[10]) + 2;          // number of states in master equation of dimension 1

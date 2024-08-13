@@ -92,7 +92,7 @@ int dydt(double t, const double y[], double f[], void *param)
             // Draw climate-dependent diffusion parameter
             const double diff_rate = p.beta;
             for (int d3 = 0; d3 < p.n_me1 - 1; ++d3)
-            { // loop over sappling numbers
+            { // loop over sapling numbers
                 // Diffusion from master equation of adult trees
                 for (int d4 = 0; d4 < p.n_me2 - 2; ++d4)
                 {
@@ -142,7 +142,7 @@ int dydt(double t, const double y[], double f[], void *param)
         }
     }
 
-    // Process all internal dynamics for sapplings and trees
+    // Process all internal dynamics for saplings and trees
     for (int d1 = 0; d1 < p.n_l; ++d1)
     {
         for (int d2 = 0; d2 < p.n_l; ++d2)
@@ -171,7 +171,7 @@ int dydt(double t, const double y[], double f[], void *param)
                     }
 
                     if (d3 == p.n_me1 - 3 && d4 < p.n_me2 - 3)
-                    { // final states of master equation for sappling
+                    { // final states of master equation for sapling
                         fref[d1][d2][0][d3][d4] = 0.0;
                         if (d3 > 0)
                             fref[d1][d2][0][d3][d4] = p.seedling2sapling * (yref[d1][d2][2][d3 - 1][d4] * yref[d1][d2][0][d3 - 1][d4] - yref[d1][d2][2][d3][d4] * yref[d1][d2][0][d3][d4]); // seedling to sapling mean-field forcing
@@ -200,7 +200,7 @@ int dydt(double t, const double y[], double f[], void *param)
                     }
 
                     if (d3 == p.n_me1 - 3 && d4 == p.n_me2 - 3)
-                    { // final states of master equations for sappling + trees
+                    { // final states of master equations for sapling + trees
                         fref[d1][d2][0][d3][d4] = 0.0;
                         if (d3 > 0)
                             fref[d1][d2][0][d3][d4] = -yref[d1][d2][0][d3][d4] * d3 * p.sapling_death - yref[d1][d2][0][d3][d4] * p.sapling2tree * pow(1.0 * d3, 0.5) * Growth(1.0 * d4, K); // sapling loss outflux
@@ -215,7 +215,7 @@ int dydt(double t, const double y[], double f[], void *param)
                     }
 
                     if (d3 == p.n_me1 - 2 && d4 < p.n_me2 - 3)
-                    { // sapplings mean-field equation, general adult master equation
+                    { // saplings mean-field equation, general adult master equation
                         fref[d1][d2][0][d3][d4] = 0.0;
                         if (d3 > 0)
                             fref[d1][d2][0][d3][d4] = yref[d1][d2][2][d3 - 1][d4] * p.seedling2sapling * yref[d1][d2][0][d3 - 1][d4];                  // occupation number influx
@@ -236,7 +236,7 @@ int dydt(double t, const double y[], double f[], void *param)
                     }
 
                     if (d3 == p.n_me1 - 2 && d4 == p.n_me2 - 3)
-                    { // sapplings mean-field equation, final adult master equation state
+                    { // saplings mean-field equation, final adult master equation state
                         fref[d1][d2][0][d3][d4] = 0.0;
                         if (d3 > 0)
                             fref[d1][d2][0][d3][d4] = yref[d1][d2][2][d3 - 1][d4] * p.seedling2sapling * yref[d1][d2][0][d3 - 1][d4];                  // occupation number influx
@@ -257,7 +257,7 @@ int dydt(double t, const double y[], double f[], void *param)
                     }
 
                     if (d3 < p.n_me1 - 3 && d4 == p.n_me2 - 2)
-                    { // general sapplings master equation, adult tree mean-field equation
+                    { // general saplings master equation, adult tree mean-field equation
                         fref[d1][d2][0][d3][d4] = 0.0;
                         if (d4 > 0)
                             fref[d1][d2][0][d3][d4] = yref[d1][d2][0][d3 + 1][d4 - 1] * pow(1.0 + d3, 0.5) * p.sapling2tree * Growth(1.0 * d4 - 1.0, K); // occupation number influx
@@ -277,7 +277,7 @@ int dydt(double t, const double y[], double f[], void *param)
                     }
 
                     if (d3 == p.n_me1 - 3 && d4 == p.n_me2 - 2)
-                    { // final sapplings master equation state, adult tree mean-field equation
+                    { // final saplings master equation state, adult tree mean-field equation
                         fref[d1][d2][0][d3][d4] = 0.0;
                         if (d4 > 0)
                             fref[d1][d2][0][d3][d4] = yref[d1][d2][0][d3 + 1][d4 - 1] * p.sapling2tree * pow(1.0 + d3, 0.5) * Growth(1.0 * d4 - 1.0, K) * Poisson_coupling(d3 + 1, yref[d1][d2][0][d3 + 2][d4 - 1]); // occupation number influx
@@ -301,17 +301,17 @@ int dydt(double t, const double y[], double f[], void *param)
                     { // double mean-regime
                         fref[d1][d2][0][d3][d4] = 0.0;
                         if (d3 > 0)
-                            fref[d1][d2][0][d3][d4] = yref[d1][d2][2][d3 - 1][d4] * p.seedling2sapling * yref[d1][d2][0][d3 - 1][d4]; // sappling MF occupation number influx
+                            fref[d1][d2][0][d3][d4] = yref[d1][d2][2][d3 - 1][d4] * p.seedling2sapling * yref[d1][d2][0][d3 - 1][d4]; // sapling MF occupation number influx
                         if (d3 > 0)
-                            fref[d1][d2][0][d3][d4] -= (yref[d1][d2][0][d3][d4] * d3 * p.sapling_death + yref[d1][d2][0][d3][d4] * p.sapling2tree * pow(1.0 * d3, 0.5) * Growth(yref[d1][d2][0][d3][d4 + 1], K)) * Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4]); // sappling MF occupation number outflux
+                            fref[d1][d2][0][d3][d4] -= (yref[d1][d2][0][d3][d4] * d3 * p.sapling_death + yref[d1][d2][0][d3][d4] * p.sapling2tree * pow(1.0 * d3, 0.5) * Growth(yref[d1][d2][0][d3][d4 + 1], K)) * Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4]); // sapling MF occupation number outflux
                         if (d4 > 0 && yref[d1][d2][0][d3 + 1][d4 - 1] > 0)
                             fref[d1][d2][0][d3][d4] += yref[d1][d2][0][d3][d4 - 1] * p.sapling2tree * pow(yref[d1][d2][0][d3 + 1][d4 - 1], 0.5) * Growth(1.0 * d4 - 1.0, K) * (1 - Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4 - 1])); // tree MF occupation number influx
                         fref[d1][d2][0][d3][d4] -= yref[d1][d2][0][d3][d4] * d4 * p.tree_death * Poisson_coupling(d4, yref[d1][d2][0][d3][d4 + 1]);                                                                                           // tree MF occupation number outflux
 
                         if (yref[d1][d2][0][d3 + 1][d4] > 0)
-                            fref[d1][d2][0][d3 + 1][d4] = yref[d1][d2][2][d3][d4] * p.seedling2sapling - yref[d1][d2][0][d3 + 1][d4] * p.sapling_death - p.sapling2tree * pow(yref[d1][d2][0][d3 + 1][d4], 0.5) * Growth(yref[d1][d2][0][d3][d4 + 1], K); // sappling mean-field state
+                            fref[d1][d2][0][d3 + 1][d4] = yref[d1][d2][2][d3][d4] * p.seedling2sapling - yref[d1][d2][0][d3 + 1][d4] * p.sapling_death - p.sapling2tree * pow(yref[d1][d2][0][d3 + 1][d4], 0.5) * Growth(yref[d1][d2][0][d3][d4 + 1], K); // sapling mean-field state
                         else
-                            fref[d1][d2][0][d3 + 1][d4] = yref[d1][d2][2][d3][d4] * p.seedling2sapling - yref[d1][d2][0][d3 + 1][d4] * (p.sapling_death); // sappling mean-field state
+                            fref[d1][d2][0][d3 + 1][d4] = yref[d1][d2][2][d3][d4] * p.seedling2sapling - yref[d1][d2][0][d3 + 1][d4] * (p.sapling_death); // sapling mean-field state
                         if (yref[d1][d2][0][d3 + 1][d4] > 0)
                             fref[d1][d2][0][d3][d4 + 1] = pow(yref[d1][d2][0][d3 + 1][d4], 0.5) * p.sapling2tree * Growth(yref[d1][d2][0][d3][d4 + 1], K) - yref[d1][d2][0][d3][d4 + 1] * p.tree_death; // tree mean-field state
                         else

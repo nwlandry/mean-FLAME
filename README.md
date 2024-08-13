@@ -54,7 +54,7 @@ life-cycle/build/life-cycle 1000.0 0.5 20.0 0.2 1.0 0.1 0.5 0.05 50 5 5
 ```
 
 ## Lokta-Volterra
-Species interactions, modeled with Lotka-Volterra systems of equations, are one of the most ubiquitous examples of mean-field models in ecology. They capture a simplified version of predator-prey or competition dynamics. This system contains no spatial aspects or coupling between subsystems to demonstrate how to generalize the internal dynamics of mean-FLAME models to systems with more than one degree of freedom (or variable of interest).
+Species interactions, modeled with Lokta-Volterra systems of equations, are one of the most ubiquitous examples of mean-field models in ecology. They capture a simplified version of predator-prey or competition dynamics. This system contains no spatial aspects or coupling between subsystems to demonstrate how to generalize the internal dynamics of mean-FLAME models to systems with more than one degree of freedom (or variable of interest).
 
 The installation process creates an executable called `lokta-volterra` that is located in `life-cycle/build`. To run this executable, from the main directory run
 ```

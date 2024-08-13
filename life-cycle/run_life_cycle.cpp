@@ -33,13 +33,13 @@ int main(int argc, const char *argv[])
         cerr << "Requires 11 parameters:\n"
              << "basic diffusion rate (beta)\n"
              << "rate of seed to seedling (seed2seedling)\n"
-             << "seed death rate (seeddeath)\n"
+             << "seed death rate (seed_death)\n"
              << "seedling to sapling (seedling2sapling)\n"
-             << "seedling death rate (seedlingdeath)\n"
+             << "seedling death rate (seedling_death)\n"
              << "sapling to tree (sapling2tree)\n"
              << "sapling death rate (saplingdeath)\n"
-             << "tree death rate (treedeath)\n"
-             << "side length of location grid (N)\n"
+             << "tree death rate (tree_death)\n"
+             << "side length of location grid (n_l)\n"
              << "number of master sapling states\n"
              << "number of master adult states\n"
              << endl;
@@ -49,17 +49,28 @@ int main(int argc, const char *argv[])
     // Model parameters
     double beta = atof(argv[1]);             // basic diffusion rate
     double seed2seedling = atof(argv[2]);    // rate of seed 2 seedling transition
-    double seeddeath = atof(argv[3]);        // death rate for seeds
+    double seed_death = atof(argv[3]);       // death rate for seeds
     double seedling2sapling = atof(argv[4]); // rate of seedling to sappling transition
-    double seedlingdeath = atof(argv[5]);    // death rate for seedlings
+    double seedling_death = atof(argv[5]);   // death rate for seedlings
     double sapling2tree = atof(argv[6]);     // rate of sappling to tree transition
-    double sapplingdeath = atof(argv[7]);    // death rate for sapplings
-    double treedeath = atof(argv[8]);        // death rate for trees
-    int N = atoi(argv[9]);                   // side length of location grid
-    int MF3 = atoi(argv[10]) + 2;            // number of states in master equation of dimension 1
-    int MF4 = atoi(argv[11]) + 2;            // number of states in master equation of dimension 2
+    double sapling_death = atof(argv[7]);    // death rate for sapplings
+    double tree_death = atof(argv[8]);       // death rate for trees
+    int n_l = atoi(argv[9]);                 // side length of location grid
+    int n_me1 = atoi(argv[10]) + 2;          // number of states in master equation of dimension 1
+    int n_me2 = atoi(argv[11]) + 2;          // number of states in master equation of dimension 2
 
-    Sparam param = {beta, seed2seedling, seeddeath, seedling2sapling, seedlingdeath, sapling2tree, sapplingdeath, treedeath, N, MF3, MF4};
+    Sparam param = {
+        beta,
+        seed2seedling,
+        seed_death,
+        seedling2sapling,
+        seedling_death,
+        sapling2tree,
+        sapling_death,
+        tree_death,
+        n_l,
+        n_me1,
+        n_me2};
 
     // Integrator parameters
     double t = 0.0;
@@ -71,14 +82,14 @@ int main(int argc, const char *argv[])
     // Setting initial conditions
     typedef boost::multi_array<double, 5> mat_type;
     typedef mat_type::index index;
-    mat_type y(boost::extents[N][N][3][MF3][MF4]);
+    mat_type y(boost::extents[n_l][n_l][3][n_me1][n_me2]);
     fill(y.data(), y.data() + y.num_elements(), 0.0);
 
     // Initial conditions
-    if (MF3 == 2 && MF4 == 2)
+    if (n_me1 == 2 && n_me2 == 2)
     {
-        for (int d1 = 0; d1 < N; ++d1)
-            for (int d2 = 0; d2 < N; ++d2)
+        for (int d1 = 0; d1 < n_l; ++d1)
+            for (int d2 = 0; d2 < n_l; ++d2)
             { // loop over all sites
                 if (d1 < 5 && d2 < 5)
                 {
@@ -98,8 +109,8 @@ int main(int argc, const char *argv[])
     }
     else
     {
-        for (int d1 = 0; d1 < N; ++d1)
-            for (int d2 = 0; d2 < N; ++d2)
+        for (int d1 = 0; d1 < n_l; ++d1)
+            for (int d2 = 0; d2 < n_l; ++d2)
             { // loop over all sites
                 if (d1 < 5 && d2 < 5)
                 {
@@ -113,7 +124,7 @@ int main(int argc, const char *argv[])
     }
 
     // Define GSL odeiv parameters
-    long unsigned int sys_size = N * N * 3 * MF3 * MF4;
+    long unsigned int sys_size = n_l * n_l * 3 * n_me1 * n_me2;
     const gsl_odeiv_step_type *step_type = gsl_odeiv_step_rkf45;
     gsl_odeiv_step *step = gsl_odeiv_step_alloc(step_type, sys_size);
     gsl_odeiv_control *control = gsl_odeiv_control_y_new(eps_abs, eps_rel);
@@ -137,22 +148,22 @@ int main(int argc, const char *argv[])
 
         // extinction timeseries and average mature output
 
-        for (int d1 = 0; d1 < N; ++d1)
-            for (int d2 = 0; d2 < N; ++d2)
+        for (int d1 = 0; d1 < n_l; ++d1)
+            for (int d2 = 0; d2 < n_l; ++d2)
             {
                 double ext = 0.0;
                 double avg = 0.0;
                 double sum = 0.0;
-                for (int d3 = 0; d3 < MF3 - 1; ++d3)
+                for (int d3 = 0; d3 < n_me1 - 1; ++d3)
                 {
                     ext += y[d1][d2][0][d3][0];
-                    for (int d4 = 0; d4 < MF4 - 2; ++d4)
+                    for (int d4 = 0; d4 < n_me2 - 2; ++d4)
                     {
                         avg += 1.0 * d4 * y[d1][d2][0][d3][d4];
                         sum += y[d1][d2][0][d3][d4];
                     }
-                    avg += y[d1][d2][0][d3][MF4 - 2] * y[d1][d2][0][d3][MF4 - 1];
-                    sum += y[d1][d2][0][d3][MF4 - 2];
+                    avg += y[d1][d2][0][d3][n_me2 - 2] * y[d1][d2][0][d3][n_me2 - 1];
+                    sum += y[d1][d2][0][d3][n_me2 - 2];
                 }
                 cout << "t=" << t
                      << ", d1=" << d1

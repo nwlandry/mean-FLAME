@@ -10,7 +10,7 @@ This repository provides the C++ code necessary to generate the results presente
 
 The repository contains several directories:
 * `life-cycle`: contains all of the code used for simulating an ecological model using the mean-FLAME model approach.
-* `Lokta-Volterra`: contains all of the code used for simulating the Lokta-Volterra model using the mean-FLAME model approach.
+* `Lotka-Volterra`: contains all of the code used for simulating the Lotka-Volterra model using the mean-FLAME model approach.
 * `SIRS`: contains all of the code used for simulating the SIRS model using the mean-FLAME model approach.
 * `tutorials`: contains a Jupyter notebook which demonstrates simulating a birth-death process in Python using the mean-FLAME modeling approach.
 
@@ -29,7 +29,7 @@ brew install boost
 brew install gsl
 ```
 
-For each of the folders (`life-cycle`, `Lokta-Volterra`, and `SIRS`), build the executable by doing the following:
+For each of the folders (`life-cycle`, `Lotka-Volterra`, and `SIRS`), build the executable by doing the following:
 
 From the top-level directory, run the following commands:
 ```
@@ -53,16 +53,16 @@ If you want to use the parameters in Fig. 8, the command to run is
 life-cycle/build/life-cycle 1000.0 0.5 20.0 0.2 1.0 0.1 0.5 0.05 50 5 5
 ```
 
-## Lokta-Volterra
-Species interactions, modeled with Lokta-Volterra systems of equations, are one of the most ubiquitous examples of mean-field models in ecology. They capture a simplified version of predator-prey or competition dynamics. This system contains no spatial aspects or coupling between subsystems to demonstrate how to generalize the internal dynamics of mean-FLAME models to systems with more than one degree of freedom (or variable of interest).
+## Lotka-Volterra
+Species interactions, modeled with Lotka-Volterra systems of equations, are one of the most ubiquitous examples of mean-field models in ecology. They capture a simplified version of predator-prey or competition dynamics. This system contains no spatial aspects or coupling between subsystems to demonstrate how to generalize the internal dynamics of mean-FLAME models to systems with more than one degree of freedom (or variable of interest).
 
-The installation process creates an executable called `lokta-volterra` that is located in `life-cycle/build`. To run this executable, from the main directory run
+The installation process creates an executable called `lotka-volterra` that is located in `life-cycle/build`. To run this executable, from the main directory run
 ```
-Lokta-Volterra/build/lokta-volterra <beta> <mu> <K> <nu> <n_l> <n_me1> <n_me2>
+Lotka-Volterra/build/lotka-volterra <beta> <mu> <K> <nu> <n_l> <n_me1> <n_me2>
 ```
 If you want to use the parameters in Fig. 5, the command to run is
 ```
-Lokta-Volterra/build/lokta-volterra 0.1 0.005 20 0.1 1 3 3
+Lotka-Volterra/build/lotka-volterra 0.1 0.005 20 0.1 1 3 3
 ```
 
 ## SIRS

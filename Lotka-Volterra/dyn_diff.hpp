@@ -8,7 +8,7 @@
 using namespace std;
 
 /**
- * @brief  ODE system for Lokta-Voleterra dynamics in a coupled master-equation + mean-field system
+ * @brief  ODE system for Lotka-Volterra dynamics in a coupled master-equation + mean-field system
  * @author  LHD
  * @since   2024-01-02
  */

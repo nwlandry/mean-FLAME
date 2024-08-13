@@ -17,7 +17,7 @@ using namespace std;
 
 struct Sparam
 {
-    const double beta;
+    const double tree2seed;
     const double seed2seedling;
     const double seed_death;
     const double seedling2sapling;
@@ -90,7 +90,7 @@ int dydt(double t, const double y[], double f[], void *param)
         for (int d2 = 0; d2 < p.n_l; ++d2)
         { // loop over sites
             // Draw climate-dependent diffusion parameter
-            const double diff_rate = p.beta;
+            const double diff_rate = p.tree2seed;
             for (int d3 = 0; d3 < p.n_me1 - 1; ++d3)
             { // loop over sapling numbers
                 // Diffusion from master equation of adult trees
@@ -125,7 +125,7 @@ int dydt(double t, const double y[], double f[], void *param)
         for (int d2 = 0; d2 < p.n_l; ++d2)
         { // loop over sites
             // Draw climate-dependent diffusion parameter
-            const double diff_rate = p.beta;
+            const double diff_rate = p.tree2seed;
             // double K = Suitability(t,d1,d2)*100;
             for (int d3 = 0; d3 < p.n_me1 - 1; ++d3)
             {

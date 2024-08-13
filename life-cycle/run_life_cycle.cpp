@@ -31,7 +31,7 @@ int main(int argc, const char *argv[])
     if (argc < 11)
     {
         cerr << "Requires 11 parameters:\n"
-             << "basic diffusion rate (beta)\n"
+             << "rate of seed production (tree2seed)\n"
              << "rate of seed to seedling (seed2seedling)\n"
              << "seed death rate (seed_death)\n"
              << "seedling to sapling (seedling2sapling)\n"
@@ -46,8 +46,10 @@ int main(int argc, const char *argv[])
         return 0;
     }
 
+    cout << "Starting simulation..." << endl;
+
     // Model parameters
-    double beta = atof(argv[1]);             // basic diffusion rate
+    double tree2seed = atof(argv[1]);             // basic diffusion rate
     double seed2seedling = atof(argv[2]);    // rate of seed 2 seedling transition
     double seed_death = atof(argv[3]);       // death rate for seeds
     double seedling2sapling = atof(argv[4]); // rate of seedling to sapling transition
@@ -60,7 +62,7 @@ int main(int argc, const char *argv[])
     int n_me2 = atoi(argv[11]) + 2;          // number of states in master equation of dimension 2
 
     Sparam param = {
-        beta,
+        tree2seed,
         seed2seedling,
         seed_death,
         seedling2sapling,

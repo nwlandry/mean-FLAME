@@ -52,6 +52,8 @@ int main(int argc, const char *argv[])
         return 0;
     }
 
+    cout << "Starting simulation..." << endl;
+    
     // Model parameters
     double beta = atof(argv[1]);  // transmission rate
     double alpha = atof(argv[2]); // recovery rate

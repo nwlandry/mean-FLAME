@@ -60,14 +60,12 @@ int dydt(double t, const double y[], double f[], void *param)
     typedef boost::multi_array_ref<double, 5> matref_type;
     typedef CSTmatref_type::index indexref;
     CSTmatref_type yref(y, boost::extents[p.N][p.N][1][p.MF3][p.MF4]);
-    // fill(yref.data(),yref.data()+yref.num_elements(),0.0);
     matref_type fref(f, boost::extents[p.N][p.N][1][p.MF3][p.MF4]);
-    // fill(fref.data(),fref.data()+fref.num_elements(),0.0);
 
     // Process all dynamics
-    for (int d01 = 0; d01 < p.N; ++d01)
+    for (int d1 = 0; d1 < p.N; ++d1)
     {
-        for (int d02 = 0; d02 < p.N; ++d02)
+        for (int d2 = 0; d2 < p.N; ++d2)
         {
             for (int d3 = 0; d3 < p.MF3 - 1; ++d3)
             {
@@ -76,106 +74,106 @@ int dydt(double t, const double y[], double f[], void *param)
 
                     if (d3 < p.MF3 - 3 && d4 < p.MF4 - 3)
                     { // general master equation
-                        fref[d01][d02][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d01][d02][0][d3][d4] - p.nu * d4 * yref[d01][d02][0][d3][d4] - p.beta * d3 * d4 * yref[d01][d02][0][d3][d4];
-                        fref[d01][d02][0][d3][d4] += p.nu * (d4 + 1) * yref[d01][d02][0][d3][d4 + 1];
+                        fref[d1][d2][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d1][d2][0][d3][d4] - p.nu * d4 * yref[d1][d2][0][d3][d4] - p.beta * d3 * d4 * yref[d1][d2][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] += p.nu * (d4 + 1) * yref[d1][d2][0][d3][d4 + 1];
                         if (d3 > 0)
-                            fref[d01][d02][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d01][d02][0][d3 - 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d1][d2][0][d3 - 1][d4];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * (d3 + 1) * (d4 - 1) * yref[d01][d02][0][d3 + 1][d4 - 1];
+                            fref[d1][d2][0][d3][d4] += p.beta * (d3 + 1) * (d4 - 1) * yref[d1][d2][0][d3 + 1][d4 - 1];
                     }
 
                     if (d3 == p.MF3 - 3 && d4 < p.MF4 - 3)
                     { // final states of master equation for prey
-                        fref[d01][d02][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d01][d02][0][d3][d4] - p.nu * d4 * yref[d01][d02][0][d3][d4] - p.beta * d3 * d4 * yref[d01][d02][0][d3][d4];
-                        fref[d01][d02][0][d3][d4] += p.nu * (d4 + 1) * yref[d01][d02][0][d3][d4 + 1];
+                        fref[d1][d2][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d1][d2][0][d3][d4] - p.nu * d4 * yref[d1][d2][0][d3][d4] - p.beta * d3 * d4 * yref[d1][d2][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] += p.nu * (d4 + 1) * yref[d1][d2][0][d3][d4 + 1];
                         if (d3 > 0)
-                            fref[d01][d02][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d01][d02][0][d3 - 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d1][d2][0][d3 - 1][d4];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * (d3 + 1) * truncated_Poisson_coupling(d3 + 1, yref[d01][d02][0][d3 + 2][d4 - 1]) * (d4 - 1) * yref[d01][d02][0][d3 + 1][d4 - 1];
+                            fref[d1][d2][0][d3][d4] += p.beta * (d3 + 1) * truncated_Poisson_coupling(d3 + 1, yref[d1][d2][0][d3 + 2][d4 - 1]) * (d4 - 1) * yref[d1][d2][0][d3 + 1][d4 - 1];
                     }
 
                     if (d3 < p.MF3 - 3 && d4 == p.MF4 - 3)
                     { // final states of master equation for predator
-                        fref[d01][d02][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d01][d02][0][d3][d4] - p.nu * d4 * yref[d01][d02][0][d3][d4] - p.beta * d3 * d4 * yref[d01][d02][0][d3][d4];
-                        fref[d01][d02][0][d3][d4] += p.nu * (d4 + 1) * truncated_Poisson_coupling(d4 + 1, yref[d01][d02][0][d3][d4 + 2]) * yref[d01][d02][0][d3][d4 + 1];
+                        fref[d1][d2][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d1][d2][0][d3][d4] - p.nu * d4 * yref[d1][d2][0][d3][d4] - p.beta * d3 * d4 * yref[d1][d2][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] += p.nu * (d4 + 1) * truncated_Poisson_coupling(d4 + 1, yref[d1][d2][0][d3][d4 + 2]) * yref[d1][d2][0][d3][d4 + 1];
                         if (d3 > 0)
-                            fref[d01][d02][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d01][d02][0][d3 - 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d1][d2][0][d3 - 1][d4];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * (d3 + 1) * (d4 - 1) * yref[d01][d02][0][d3 + 1][d4 - 1];
+                            fref[d1][d2][0][d3][d4] += p.beta * (d3 + 1) * (d4 - 1) * yref[d1][d2][0][d3 + 1][d4 - 1];
                     }
 
                     if (d3 == p.MF3 - 3 && d4 == p.MF4 - 3)
                     { // final states of master equations for prey + predator
-                        fref[d01][d02][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d01][d02][0][d3][d4] - p.nu * d4 * yref[d01][d02][0][d3][d4] - p.beta * d3 * d4 * yref[d01][d02][0][d3][d4];
-                        fref[d01][d02][0][d3][d4] += p.nu * (d4 + 1) * truncated_Poisson_coupling(d4 + 1, yref[d01][d02][0][d3][d4 + 2]) * yref[d01][d02][0][d3][d4 + 1];
+                        fref[d1][d2][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d1][d2][0][d3][d4] - p.nu * d4 * yref[d1][d2][0][d3][d4] - p.beta * d3 * d4 * yref[d1][d2][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] += p.nu * (d4 + 1) * truncated_Poisson_coupling(d4 + 1, yref[d1][d2][0][d3][d4 + 2]) * yref[d1][d2][0][d3][d4 + 1];
                         if (d3 > 0)
-                            fref[d01][d02][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d01][d02][0][d3 - 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d1][d2][0][d3 - 1][d4];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * (d3 + 1) * truncated_Poisson_coupling(d3 + 1, yref[d01][d02][0][d3 + 2][d4 - 1]) * (d4 - 1) * yref[d01][d02][0][d3 + 1][d4 - 1];
+                            fref[d1][d2][0][d3][d4] += p.beta * (d3 + 1) * truncated_Poisson_coupling(d3 + 1, yref[d1][d2][0][d3 + 2][d4 - 1]) * (d4 - 1) * yref[d1][d2][0][d3 + 1][d4 - 1];
                     }
 
                     if (d3 == p.MF3 - 2 && d4 < p.MF4 - 3)
                     { // prey mean-field equation, general predator master equation
-                        fref[d01][d02][0][d3][d4] = -p.nu * d4 * yref[d01][d02][0][d3][d4];
-                        fref[d01][d02][0][d3][d4] -= p.beta * ((1.0 - truncated_Poisson_coupling(d3, yref[d01][d02][0][d3 + 1][d4])) * yref[d01][d02][0][d3 + 1][d4] + truncated_Poisson_coupling(d3, yref[d01][d02][0][d3 + 1][d4]) * d3) * d4 * yref[d01][d02][0][d3][d4];
-                        fref[d01][d02][0][d3][d4] += p.nu * (d4 + 1) * yref[d01][d02][0][d3][d4 + 1];
+                        fref[d1][d2][0][d3][d4] = -p.nu * d4 * yref[d1][d2][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] -= p.beta * ((1.0 - truncated_Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4])) * yref[d1][d2][0][d3 + 1][d4] + truncated_Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4]) * d3) * d4 * yref[d1][d2][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] += p.nu * (d4 + 1) * yref[d1][d2][0][d3][d4 + 1];
                         if (d3 > 0)
-                            fref[d01][d02][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d01][d02][0][d3 - 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d1][d2][0][d3 - 1][d4];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * yref[d01][d02][0][d3 + 1][d4 - 1] * (1.0 - truncated_Poisson_coupling(d3, yref[d01][d02][0][d3 + 1][d4 - 1])) * (d4 - 1) * yref[d01][d02][0][d3][d4 - 1];
+                            fref[d1][d2][0][d3][d4] += p.beta * yref[d1][d2][0][d3 + 1][d4 - 1] * (1.0 - truncated_Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4 - 1])) * (d4 - 1) * yref[d1][d2][0][d3][d4 - 1];
 
-                        fref[d01][d02][0][d3 + 1][d4] = p.mu * yref[d01][d02][0][d3 + 1][d4] * (p.K - yref[d01][d02][0][d3 + 1][d4]) / p.K - p.beta * d4 * yref[d01][d02][0][d3 + 1][d4]; // mean-field state
+                        fref[d1][d2][0][d3 + 1][d4] = p.mu * yref[d1][d2][0][d3 + 1][d4] * (p.K - yref[d1][d2][0][d3 + 1][d4]) / p.K - p.beta * d4 * yref[d1][d2][0][d3 + 1][d4]; // mean-field state
                     }
 
                     if (d3 == p.MF3 - 2 && d4 == p.MF4 - 3)
                     { // prey mean-field equation, final predator master equation state
-                        fref[d01][d02][0][d3][d4] = -p.nu * d4 * yref[d01][d02][0][d3][d4];
-                        fref[d01][d02][0][d3][d4] -= p.beta * ((1.0 - truncated_Poisson_coupling(d3, yref[d01][d02][0][d3 + 1][d4])) * yref[d01][d02][0][d3 + 1][d4] + truncated_Poisson_coupling(d3, yref[d01][d02][0][d3 + 1][d4]) * d3) * d4 * yref[d01][d02][0][d3][d4];
-                        fref[d01][d02][0][d3][d4] += p.nu * (d4 + 1) * truncated_Poisson_coupling(d4 + 1, yref[d01][d02][0][d3][d4 + 2]) * yref[d01][d02][0][d3][d4 + 1];
+                        fref[d1][d2][0][d3][d4] = -p.nu * d4 * yref[d1][d2][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] -= p.beta * ((1.0 - truncated_Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4])) * yref[d1][d2][0][d3 + 1][d4] + truncated_Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4]) * d3) * d4 * yref[d1][d2][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] += p.nu * (d4 + 1) * truncated_Poisson_coupling(d4 + 1, yref[d1][d2][0][d3][d4 + 2]) * yref[d1][d2][0][d3][d4 + 1];
                         if (d3 > 0)
-                            fref[d01][d02][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d01][d02][0][d3 - 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d1][d2][0][d3 - 1][d4];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * yref[d01][d02][0][d3 + 1][d4 - 1] * (1.0 - truncated_Poisson_coupling(d3, yref[d01][d02][0][d3 + 1][d4 - 1])) * (d4 - 1) * yref[d01][d02][0][d3][d4 - 1];
+                            fref[d1][d2][0][d3][d4] += p.beta * yref[d1][d2][0][d3 + 1][d4 - 1] * (1.0 - truncated_Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4 - 1])) * (d4 - 1) * yref[d1][d2][0][d3][d4 - 1];
 
-                        fref[d01][d02][0][d3 + 1][d4] = p.mu * yref[d01][d02][0][d3 + 1][d4] * (p.K - yref[d01][d02][0][d3 + 1][d4]) / p.K - p.beta * d4 * yref[d01][d02][0][d3 + 1][d4]; // mean-field state
+                        fref[d1][d2][0][d3 + 1][d4] = p.mu * yref[d1][d2][0][d3 + 1][d4] * (p.K - yref[d1][d2][0][d3 + 1][d4]) / p.K - p.beta * d4 * yref[d1][d2][0][d3 + 1][d4]; // mean-field state
                     }
 
                     if (d3 < p.MF3 - 3 && d4 == p.MF4 - 2)
                     { // general prey master equation, predator mean-field equation
-                        fref[d01][d02][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d01][d02][0][d3][d4] - p.nu * d4 * truncated_Poisson_coupling(d4, yref[d01][d02][0][d3][d4 + 1]) * yref[d01][d02][0][d3][d4] - p.beta * d3 * yref[d01][d02][0][d3][d4 + 1] * yref[d01][d02][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d1][d2][0][d3][d4] - p.nu * d4 * truncated_Poisson_coupling(d4, yref[d1][d2][0][d3][d4 + 1]) * yref[d1][d2][0][d3][d4] - p.beta * d3 * yref[d1][d2][0][d3][d4 + 1] * yref[d1][d2][0][d3][d4];
                         if (d3 > 0)
-                            fref[d01][d02][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d01][d02][0][d3 - 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d1][d2][0][d3 - 1][d4];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * (d3 + 1) * (d4 - 1) * yref[d01][d02][0][d3 + 1][d4 - 1];
+                            fref[d1][d2][0][d3][d4] += p.beta * (d3 + 1) * (d4 - 1) * yref[d1][d2][0][d3 + 1][d4 - 1];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * (d3 + 1) * yref[d01][d02][0][d3 + 1][d4 + 1] * yref[d01][d02][0][d3 + 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.beta * (d3 + 1) * yref[d1][d2][0][d3 + 1][d4 + 1] * yref[d1][d2][0][d3 + 1][d4];
 
-                        fref[d01][d02][0][d3][d4 + 1] = p.beta * d3 * yref[d01][d02][0][d3][d4 + 1] - p.nu * yref[d01][d02][0][d3][d4 + 1]; // mean-field state
+                        fref[d1][d2][0][d3][d4 + 1] = p.beta * d3 * yref[d1][d2][0][d3][d4 + 1] - p.nu * yref[d1][d2][0][d3][d4 + 1]; // mean-field state
                     }
 
                     if (d3 == p.MF3 - 3 && d4 == p.MF4 - 2)
                     { // final prey master equation state, predator mean-field equation
-                        fref[d01][d02][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d01][d02][0][d3][d4] - p.nu * d4 * truncated_Poisson_coupling(d4, yref[d01][d02][0][d3][d4 + 1]) * yref[d01][d02][0][d3][d4] - p.beta * d3 * yref[d01][d02][0][d3][d4 + 1] * yref[d01][d02][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] = -p.mu * d3 * ((p.K - d3) / p.K) * yref[d1][d2][0][d3][d4] - p.nu * d4 * truncated_Poisson_coupling(d4, yref[d1][d2][0][d3][d4 + 1]) * yref[d1][d2][0][d3][d4] - p.beta * d3 * yref[d1][d2][0][d3][d4 + 1] * yref[d1][d2][0][d3][d4];
                         if (d3 > 0)
-                            fref[d01][d02][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d01][d02][0][d3 - 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d1][d2][0][d3 - 1][d4];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * (d3 + 1) * (d4 - 1) * truncated_Poisson_coupling(d3 + 1, yref[d01][d02][0][d3 + 2][d4 - 1]) * yref[d01][d02][0][d3 + 1][d4 - 1];
+                            fref[d1][d2][0][d3][d4] += p.beta * (d3 + 1) * (d4 - 1) * truncated_Poisson_coupling(d3 + 1, yref[d1][d2][0][d3 + 2][d4 - 1]) * yref[d1][d2][0][d3 + 1][d4 - 1];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * (d3 + 1) * truncated_Poisson_coupling(d3 + 1, yref[d01][d02][0][d3 + 2][d4]) * yref[d01][d02][0][d3 + 1][d4 + 1] * yref[d01][d02][0][d3 + 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.beta * (d3 + 1) * truncated_Poisson_coupling(d3 + 1, yref[d1][d2][0][d3 + 2][d4]) * yref[d1][d2][0][d3 + 1][d4 + 1] * yref[d1][d2][0][d3 + 1][d4];
 
-                        fref[d01][d02][0][d3][d4 + 1] = p.beta * d3 * yref[d01][d02][0][d3][d4 + 1] - p.nu * yref[d01][d02][0][d3][d4 + 1]; // mean-field state
+                        fref[d1][d2][0][d3][d4 + 1] = p.beta * d3 * yref[d1][d2][0][d3][d4 + 1] - p.nu * yref[d1][d2][0][d3][d4 + 1]; // mean-field state
                     }
 
                     if (d3 == p.MF3 - 2 && d4 == p.MF4 - 2)
                     { // double mean-regime
-                        fref[d01][d02][0][d3][d4] = -p.nu * d4 * truncated_Poisson_coupling(d4, yref[d01][d02][0][d3][d4 + 1]) * yref[d01][d02][0][d3][d4] - p.beta * d3 * truncated_Poisson_coupling(d3, yref[d01][d02][0][d3 + 1][d4]) * yref[d01][d02][0][d3][d4 + 1] * yref[d01][d02][0][d3][d4];
+                        fref[d1][d2][0][d3][d4] = -p.nu * d4 * truncated_Poisson_coupling(d4, yref[d1][d2][0][d3][d4 + 1]) * yref[d1][d2][0][d3][d4] - p.beta * d3 * truncated_Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4]) * yref[d1][d2][0][d3][d4 + 1] * yref[d1][d2][0][d3][d4];
                         if (d3 > 0)
-                            fref[d01][d02][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d01][d02][0][d3 - 1][d4];
+                            fref[d1][d2][0][d3][d4] += p.mu * (d3 - 1) * ((p.K - d3 + 1) / p.K) * yref[d1][d2][0][d3 - 1][d4];
                         if (d4 > 0)
-                            fref[d01][d02][0][d3][d4] += p.beta * (d4 - 1) * yref[d01][d02][0][d3 + 1][d4 - 1] * (1.0 - truncated_Poisson_coupling(d3, yref[d01][d02][0][d3 + 1][d4 - 1])) * yref[d01][d02][0][d3][d4 - 1];
+                            fref[d1][d2][0][d3][d4] += p.beta * (d4 - 1) * yref[d1][d2][0][d3 + 1][d4 - 1] * (1.0 - truncated_Poisson_coupling(d3, yref[d1][d2][0][d3 + 1][d4 - 1])) * yref[d1][d2][0][d3][d4 - 1];
 
-                        fref[d01][d02][0][d3][d4 + 1] = p.beta * yref[d01][d02][0][d3 + 1][d4] * yref[d01][d02][0][d3][d4 + 1] - p.nu * yref[d01][d02][0][d3][d4 + 1];                                               // mean-field state
-                        fref[d01][d02][0][d3 + 1][d4] = p.mu * yref[d01][d02][0][d3 + 1][d4] * (p.K - yref[d01][d02][0][d3 + 1][d4]) / p.K - p.beta * yref[d01][d02][0][d3][d4 + 1] * yref[d01][d02][0][d3 + 1][d4]; // mean-field state
+                        fref[d1][d2][0][d3][d4 + 1] = p.beta * yref[d1][d2][0][d3 + 1][d4] * yref[d1][d2][0][d3][d4 + 1] - p.nu * yref[d1][d2][0][d3][d4 + 1];                                               // mean-field state
+                        fref[d1][d2][0][d3 + 1][d4] = p.mu * yref[d1][d2][0][d3 + 1][d4] * (p.K - yref[d1][d2][0][d3 + 1][d4]) / p.K - p.beta * yref[d1][d2][0][d3][d4 + 1] * yref[d1][d2][0][d3 + 1][d4]; // mean-field state
                     }
                 }
             }

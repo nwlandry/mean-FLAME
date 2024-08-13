@@ -77,39 +77,38 @@ int main(int argc, const char *argv[])
     // Initial conditions
     if (MF3 == 2 && MF4 == 2)
     {
-        for (int d01 = 0; d01 < N; ++d01)
-            for (int d02 = 0; d02 < N; ++d02)
+        for (int d1 = 0; d1 < N; ++d1)
+            for (int d2 = 0; d2 < N; ++d2)
             { // loop over all sites
-                if (d01 < 5 && d02 < 5)
+                if (d1 < 5 && d2 < 5)
                 {
-                    y[d01][d02][0][0][0] = 1.0;
-                    y[d01][d02][0][1][0] = 1.0;
-                    y[d01][d02][0][0][1] = 1.0;
-                    y[d01][d02][1][0][0] = 10.0;
-                    y[d01][d02][2][0][0] = 20.0;
+                    y[d1][d2][0][0][0] = 1.0;
+                    y[d1][d2][0][1][0] = 1.0;
+                    y[d1][d2][0][0][1] = 1.0;
+                    y[d1][d2][1][0][0] = 10.0;
+                    y[d1][d2][2][0][0] = 20.0;
                 }
                 else
                 {
-                    y[d01][d02][0][0][0] = 1.0;
-                    y[d01][d02][0][1][0] = 0.0;
-                    y[d01][d02][0][0][1] = 0.0;
+                    y[d1][d2][0][0][0] = 1.0;
+                    y[d1][d2][0][1][0] = 0.0;
+                    y[d1][d2][0][0][1] = 0.0;
                 }
             }
     }
     else
     {
-        for (int d01 = 0; d01 < N; ++d01)
-            for (int d02 = 0; d02 < N; ++d02)
+        for (int d1 = 0; d1 < N; ++d1)
+            for (int d2 = 0; d2 < N; ++d2)
             { // loop over all sites
-                if (d01 < 5 && d02 < 5)
+                if (d1 < 5 && d2 < 5)
                 {
-                    y[d01][d02][0][1][1] = 1.0;
-                    y[d01][d02][1][1][1] = 10.0;
-                    y[d01][d02][2][1][1] = 20.0;
+                    y[d1][d2][0][1][1] = 1.0;
+                    y[d1][d2][1][1][1] = 10.0;
+                    y[d1][d2][2][1][1] = 20.0;
                 }
                 else
-                    y[d01][d02][0][0][0] = 1.0;
-                // for(int d3=0;d3<MF3-1;++d3) for(int d4=0;d4<MF4-1;++d4) y[d01][d02][1][d3][d4] = 20.0;
+                    y[d1][d2][0][0][0] = 1.0;
             }
     }
 
@@ -131,56 +130,37 @@ int main(int argc, const char *argv[])
             status = gsl_odeiv_evolve_apply(evolve, control, step, &sys, &t, t_target, &dt, y.data());
             if (status != GSL_SUCCESS)
             {
-                cout << "SNAFU" << endl;
+                cout << "ODE solver failed!" << endl;
                 break;
             }
         } // end while
 
-        // average timeseries output
-        /*for(int d01=0; d01<N; ++d01) for(int d02=0; d02<N; ++d02) {
-            double avg = 0.0;
-            for(int d3=0;d3<MF3-1;++d3) {
-                for(int d4=0;d4<MF4-2;++d4) avg += y[d01][d02][0][d3][d4]*d4;
-                avg += y[d01][d02][0][d3][MF4-2]*y[d01][d02][0][d3][MF4-1];
-            }
-            cout << t << "," << d01 << "," << d02 <<"," << avg << "\n";
-        }*/
-
-        // specific site output
-        /*
-        double sum = 0.0;
-        cout << t << ",";
-        for(int d3=0;d3<MF3-1;++d3) for(int d4=0;d4<MF4-1;++d4) {
-            sum += y[0][0][0][d3][d4];
-            cout << " " << d3 << "," << d4;
-            cout << " " << y[0][0][0][d3][d4]<< " " << y[0][0][1][d3][d4]<< " " << y[0][0][2][d3][d4];
-        }
-        cout << " " << y[0][0][0][MF3-1][MF4-2] << " " << y[0][0][0][MF3-2][MF4-1] << " ";
-        cout << sum << "\n";
-        */
         // extinction timeseries and average mature output
 
-        for (int d01 = 0; d01 < N; ++d01)
-            for (int d02 = 0; d02 < N; ++d02)
+        for (int d1 = 0; d1 < N; ++d1)
+            for (int d2 = 0; d2 < N; ++d2)
             {
                 double ext = 0.0;
                 double avg = 0.0;
                 double sum = 0.0;
                 for (int d3 = 0; d3 < MF3 - 1; ++d3)
                 {
-                    ext += y[d01][d02][0][d3][0];
+                    ext += y[d1][d2][0][d3][0];
                     for (int d4 = 0; d4 < MF4 - 2; ++d4)
                     {
-                        avg += 1.0 * d4 * y[d01][d02][0][d3][d4];
-                        sum += y[d01][d02][0][d3][d4];
+                        avg += 1.0 * d4 * y[d1][d2][0][d3][d4];
+                        sum += y[d1][d2][0][d3][d4];
                     }
-                    avg += y[d01][d02][0][d3][MF4 - 2] * y[d01][d02][0][d3][MF4 - 1];
-                    sum += y[d01][d02][0][d3][MF4 - 2];
+                    avg += y[d1][d2][0][d3][MF4 - 2] * y[d1][d2][0][d3][MF4 - 1];
+                    sum += y[d1][d2][0][d3][MF4 - 2];
                 }
-                cout << t << "," << d01 << "," << d02 << "," << ext << "," << avg << "," << sum << "\n";
-                // cout << t << "," << d01 << "," << d02;
-                // for(int d3=0;d3<MF3-1;++d3) cout << "," << y[d01][d02][0][d3][MF4-1] << "," << y[d01][d02][0][d3][MF4-2];
-                // cout << "\n";
+                cout << "t=" << t
+                     << ", d1=" << d1
+                     << ", d2=" << d2
+                     << ", ext=" << ext
+                     << ", avg=" << avg
+                     << ", sum=" << sum
+                     << endl;
             }
 
     } // end while
